@@ -1,22 +1,30 @@
 vec2 = require "vector2d"
+require "utils"
 
-NUM_BOIDS = 2000
+NUM_BOIDS = 1000
 boidconf = {
-	maxSpeed = 50,
+	maxSpeed = 200,
 	maxForce = 3000,
 	neighborRadius = 30,
+	sepWeight = 1,
+	aliWeight = 1,
+	cohWeight = 0.2
 }
 
+active = {}
 accelerations = {}
 velocities = {}
 positions = {}
 neighbors = {}
 
+currentboid = 0
+
 local function init()
 	for i = 1, NUM_BOIDS do
+		active[i] = false
 		accelerations[i] = {0, 0}
-		velocities[i] = {0, 0} -- {normRand() * boidconf.maxSpeed, normRand() * boidconf.maxSpeed}
-		positions[i] = {love.math.random(config.width), love.math.random(config.height)}
+		velocities[i] = {0, 0}
+		positions[i] = {0, 0}
 		
 		neighbors[i] = {}
 		for j = 1, NUM_BOIDS do
@@ -26,24 +34,29 @@ local function init()
 end
 
 local function draw()
+	love.graphics.setColor(255,225,141)
+
 	-- draw all the things
 	for i = 1, NUM_BOIDS do
-		love.graphics.setColor(255, 255, 255)
-		love.graphics.circle("fill", positions[i][1], positions[i][2], 2, 5)
+		if active[i] then
+			love.graphics.circle("fill", positions[i][1], positions[i][2], 2, 5)
+		end
 	end
 end
 
 local function updateNeighbors()
 	local sqNR = boidconf.neighborRadius * boidconf.neighborRadius
 	for i = 1, NUM_BOIDS do
-		for j = 1, NUM_BOIDS do
-			local dx = positions[i][1] - positions[j][1]
-			local dy = positions[i][2] - positions[j][2]
+		if active[i] then
+			for j = 1, NUM_BOIDS do
+				local dx = positions[i][1] - positions[j][1]
+				local dy = positions[i][2] - positions[j][2]
 
-			local isNeighbor = vec2.len2(dx, dy) <= sqNR
+				local isNeighbor = active[j] and vec2.len2(dx, dy) <= sqNR
 
-			neighbors[i][j] = isNeighbor
-			neighbors[j][i] = isNeighbor
+				neighbors[i][j] = isNeighbor
+				neighbors[j][i] = isNeighbor
+			end
 		end
 	end
 end
@@ -142,67 +155,119 @@ end
 
 local function alignment(i)
 	local sumX, sumY = 0, 0
-	local hasNeighbors = false
+	local numNeighbors = 0
 
-	for i = 1, NUM_BOIDS do
+	for j = 1, NUM_BOIDS do
 		if i ~= j and neighbors[i][j] then
-			hasNeighbors = true
+			numNeighbors = numNeighbors + 1
 			sumX = sumX + velocities[j][1]
 			sumY = sumY + velocities[j][2]
 		end
 	end
 
-	if not hasNeighbors then
+	if numNeighbors == 0 then
 		return {0, 0}
 	end
 
-	local len = vec2.len(sumX, sumY)
-	return {
-		(sumX / len) * boidconf.maxSpeed - velocities[i][1],
-		(sumY / len) * boidconf.maxSpeed - velocities[i][2]
-	}
+	-- average the velocity
+	sumX = sumX / numNeighbors
+	sumY = sumY / numNeighbors
+
+	return steerToVelocity(i, sumX, sumY)
+end
+
+local function attractor(i)
+	local len = vec2.len(positions[i][1] - 800, positions[i][2] - 450)
+
+	if len > 300 then
+		return {0, 0}
+	end
+	
+	return steerToVelocity(i, boidconf.maxSpeed, 0)
+end
+
+
+
+local function steer(i)
+	local maxF2 = boidconf.maxForce * boidconf.maxForce
+
+	local forceLeft2 = maxF2
+	local result = {0, 0}
+	
+	local addIfPossible = function(force, scaler)
+		force[1] = force[1] * scaler
+		force[2] = force[2] * scaler
+
+		if forceLeft2 > 0 then
+			local clampedForce = clampVec2(force, forceLeft2)
+			forceLeft2 = forceLeft2 - vec2.len2(clampedForce[1], clampedForce[2])
+
+			result[1] = result[1] + clampedForce[1]
+			result[2] = result[2] + clampedForce[2]
+		end
+	end
+
+	addIfPossible(attractor(i), 1)
+	addIfPossible(alignment(i), boidconf.aliWeight)
+	addIfPossible(separation(i), boidconf.sepWeight)
+	addIfPossible(cohesion(i), boidconf.cohWeight)
+
+	--local attractor = steerToVelocity(i, boidconf.maxSpeed, boidconf.maxSpeed)
+
+	--local a = alignment(i)
+	--local s = separation(i)
+	--local c = cohesion(i)
+	--result[1] = attractor[1]-- * a[1] * boidconf.aliWeight + s[1] * boidconf.sepWeight + c[1] * boidconf.cohWeight
+	--result[2] = attractor[1]-- * a[2] * boidconf.aliWeight + s[2] * boidconf.sepWeight + c[2] * boidconf.cohWeight
+
+	return result
 end
 
 local function update(dt)
 	updateNeighbors()
 
-	for i = 1, NUM_BOIDS do
-		-- steer
-		local sep = separation(i)
-		local coh = cohesion(i)
-		local ali = alignment(i)
+	for i = 1, 5 do
+		currentboid = ((currentboid + 1) % NUM_BOIDS) + 1
+		if not active[currentboid] then
+			active[currentboid] = true
+			velocities[currentboid][1] = 1.44 * boidconf.maxSpeed
+			velocities[currentboid][2] = 1.44 * boidconf.maxSpeed
 
-		accelerations[i] = {
-			sep[1] + coh[1] + ali[1],
-			sep[2] + coh[2] + ali[2]
-		}
-
-		-- damping
-		accelerations[i][1] = accelerations[i][1] * .9
-		accelerations[i][2] = accelerations[i][2] * .9
-		velocities[i][1] = velocities[i][1] * .9
-		velocities[i][2] = velocities[i][2] * .9
-
-		-- update velocity with acceleration
-		velocities[i][1] = velocities[i][1] + accelerations[i][1] * dt
-		velocities[i][2] = velocities[i][2] + accelerations[i][2] * dt
-
-		-- update position with velocity
-		positions[i][1] = positions[i][1] + velocities[i][1] * dt
-		positions[i][2] = positions[i][2] + velocities[i][2] * dt
-
-		-- wrap horizontal
-		if positions[i][1] > config.width then
-			positions[i][1] = 0
-		elseif positions[i][1] < 0 then
-			positions[i][1] = config.width - 1
+			randX, randY = vec2.randomDirection(30, 30)
+			positions[currentboid][1] = randX + 50
+			positions[currentboid][2] = randY + 50
 		end
+	end
 
-		-- wrap vertical
-		if positions[i][2] > config.height then
-			positions[i][2] = 0
-		elseif positions[i][2] < 0 then
-			positions[i][2] = config.height - 1
+	for i = 1, NUM_BOIDS do
+		if active[i] then
+			accelerations[i] = steer(i)
+
+			-- damping
+			--velocities[i][1] = velocities[i][1] * .999
+			--velocities[i][2] = velocities[i][2] * .999
+
+			-- update velocity with acceleration
+			velocities[i][1] = velocities[i][1] + accelerations[i][1] * dt
+			velocities[i][2] = velocities[i][2] + accelerations[i][2] * dt
+
+			-- update position with velocity
+			positions[i][1] = positions[i][1] + velocities[i][1] * dt
+			positions[i][2] = positions[i][2] + velocities[i][2] * dt
+
+			-- wrap horizontal
+			if positions[i][1] > config.width then
+				active[i] = false
+			elseif positions[i][1] < 0 then
+				active[i] = false
+			end
+
+			-- wrap vertical
+			if positions[i][2] > config.height then
+				active[i] = false
+			elseif positions[i][2] < 0 then
+				active[i] = false
+			end
 		end
 	end
 end
