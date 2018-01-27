@@ -38,7 +38,20 @@ function love.draw()
 end
 
 function love.mousereleased(...)
-  if (mainState.mousereleased) then mainState.mousereleased(args) end
+  if (mainState.mousereleased) then mainState.mousereleased(...) end
+end
+
+function love.mousepressed(...)
+  if (mainState.mousepressed) then mainState.mousepressed(...) end
+end
+
+
+function love.textinput(text)
+  if (mainState.textinput) then mainState.textinput(text) end
+end
+
+function love.keypressed(...)
+  if (mainState.keypressed) then mainState.textinput(...) end
 end
 
 

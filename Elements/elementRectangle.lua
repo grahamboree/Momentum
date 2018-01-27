@@ -23,7 +23,7 @@ function ElementRectangle:pointIsInside(x,y)
   if (dx < -self.width/2) then return false end
   if (dx > self.width/2) then return false end
   if (dy < -self.height/2) then return false end
-  if (dy > -self.height/2) then return false end
+  if (dy > self.height/2) then return false end
   
   return true;
 end
