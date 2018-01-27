@@ -8,8 +8,9 @@ ElementCircle = ElementBase:new();
 table.insert(ElementBase.elementClasses, ElementCircle);
 
 
+
 function ElementCircle:draw()
-  love.graphics.setColor(255,0,0);
+  self:setDrawColor();
   love.graphics.circle("fill", self.x, self.y, self.radius);
   
   if (self.text) then
@@ -20,6 +21,7 @@ function ElementCircle:draw()
 end
 
 function ElementCircle:pointIsInside(x,y)
+  self:setDefaults();
   local dx = x - self.x
   local dy = y - self.y
   return dx*dx+dy*dy <= self.radius*self.radius;
@@ -28,6 +30,7 @@ end
 function ElementCircle:setDefaults()
   if not self.radius then self.radius = 30 end
   if not self.text then self.text = "circ" end
+  if not self.color then self.color = { r = 255, g = 0, b = 0 } end
 end
 
     

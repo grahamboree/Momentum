@@ -22,17 +22,24 @@
     obj = obj or {}   -- create object if user does not provide one
     setmetatable(obj, self);
     self.__index = self;
-    self:setDefaults();
     return obj;
   end
   
   function ElementBase:draw()
+    self:setDefaults();
     print "No draw method for element!";
   end
   
   function ElementBase:pointIsInside(x,y)
+    self:setDefaults();
     return false
   end
+  
+  function ElementBase:setDrawColor()
+    self:setDefaults();
+    love.graphics.setColor(self.color.r, self.color.g, self.color.b);
+  end
+  
   
   
   function ElementBase:setDefaults() end
