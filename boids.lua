@@ -52,6 +52,6 @@ end
 
 return {
 	draw = draw,
-	init = init,
+	enter = init,
 	update = update
 }
