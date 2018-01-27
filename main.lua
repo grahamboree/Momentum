@@ -1,5 +1,9 @@
 vec2 = require "vector2d"
-boids = require "boids"
+
+states = {
+  boids = require "boids",
+  startScreen = require "startScreen"
+}
 
 -- game config
 config = {
@@ -8,8 +12,9 @@ config = {
   showWindowChrome = false,
 }
 
-mainState = boids;
 
+mainState = states.boids;
+--mainState = states.startScreen;
 
 -- intialization
 function love.load()
@@ -20,19 +25,29 @@ function love.load()
   love.window.setMode(config.width, config.height, {centered=true, borderless=not config.showWindowChrome, msaa=8})
   
   -- Really start
-  mainState.enter()
+  if mainState.enter then mainState.enter() end
 end
 
 function love.update(dt)
-  mainState.update(dt)
+  if mainState.update then mainState.update(dt) end
 end
 
 function love.draw()
   mainState.draw()
 end
 
+function love.mousereleased(...)
+  if (mainState.mousereleased) then mainState.mousereleased(args) end
+end
+
+
+
 function setMainState(state)
-  if mainState then mainState.exit() end
+  if mainState and mainState.exit then mainState.exit() end
   mainState = state;
-  mainState.enter();
+  _notifyMainStateEnter();
+end
+
+function _notifyMainStateEnter()
+  if mainState.enter then mainState.enter(config, states) end
 end
