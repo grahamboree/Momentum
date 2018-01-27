@@ -12,10 +12,6 @@ velocities = {}
 positions = {}
 neighbors = {}
 
-function normRand()
-	return love.math.random() * 2 - 1
-end
-
 local function init()
 	for i = 1, NUM_BOIDS do
 		accelerations[i] = {0, 0}
@@ -52,6 +48,42 @@ local function updateNeighbors()
 	end
 end
 
+local function steerToVelocity(i, desiredX, desiredY)
+	--[[
+	local forceX = desiredX - velocities[i][1]
+	local forceY = desiredY - velocities[i][2]
+
+	local forceLen = vec2.len(forceX, forceY)
+
+	local magnitude = forceLen / vec2.len(desiredX, desiredY)
+	magnitude = clamp01(magnitude) * boidconf.maxForce
+
+	return {
+		(forceX / forceLen) * magnitude,
+		(forceY / forceLen) * magnitude
+	}
+	]]
+
+	return {
+		desiredX - velocities[i][1],
+		desiredY - velocities[i][2]
+	}
+end
+
+local function seek(i, x, y)
+	-- delta position
+	local desiredX = x - positions[i][1]
+	local desiredY = y - positions[i][2]
+
+	local distanceToTarget = vec2.len(desiredX, desiredY)
+
+	-- delta position w/max force length
+	desiredX = (desiredX / distanceToTarget) * boidconf.maxSpeed
+	desiredY = (desiredY / distanceToTarget) * boidconf.maxSpeed
+
+	return steerToVelocity(i, desiredX, desiredY)
+end
+
 local function separation(i)
 	local steerX = 0
 	local steerY = 0
@@ -61,14 +93,17 @@ local function separation(i)
 		if i ~= j and neighbors[i][j] then
 			numNeighbors = numNeighbors + 1
 
-			-- compute separation
-			local toX, toY = vec2.sub(positions[i][1], positions[i][2], positions[j][1], positions[j][2])
+			-- vector from the neighbor to the current boid
+			local toX, toY = positions[i][1] - positions[j][1], positions[i][2] - positions[j][2]
 
+			-- normalize the vector
 			local len = vec2.len(toX, toY)
 			local normX, normY = toX/len, toY/len
 
+			-- less force the closer the neighbor
 			local scaler = 1 / len
 
+			-- accumulate the force
 			steerX = steerX + normX * scaler
 			steerY = steerY + normY * scaler
 		end
@@ -84,23 +119,40 @@ local function separation(i)
 	}
 end
 
-local function alignment()
-end
+local function cohesion(i)
+	local centroidX = 0
+	local centroidY = 0
+	local numNeighbors = 0
 
-local function cohesion()
-end
+	for j = 1, NUM_BOIDS do
+		if i ~= j and neighbors[i][j] then
+			numNeighbors = numNeighbors + 1
 
-local function steer()
-	for i = 1, NUM_BOIDS do
-		accelerations[i] = separation(i)
+			centroidX = centroidX + positions[j][1]
+			centroidY = centroidY + positions[j][2]
+		end
 	end
+
+	if numNeighbors == 0 then
+		return {0, 0}
+	end
+
+	return seek(i, centroidX / numNeighbors, centroidY / numNeighbors)
 end
 
 local function update(dt)
 	updateNeighbors()
-	steer()
 
 	for i = 1, NUM_BOIDS do
+		-- steer
+		local sep = separation(i)
+		local coh = cohesion(i)
+
+		accelerations[i] = {
+			sep[1] + coh[1],
+			sep[2] + coh[2]
+		}
+
 		-- damping
 		accelerations[i][1] = accelerations[i][1] * .9
 		accelerations[i][2] = accelerations[i][2] * .9
