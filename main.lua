@@ -2,7 +2,8 @@ vec2 = require "vector2d"
 
 states = {
   boids = require "boids",
-  startScreen = require "startScreen"
+  startScreen = require "startScreen",
+  elementEditor =require "elementEditor",
 }
 
 -- game config
@@ -15,6 +16,7 @@ config = {
 
 mainState = states.boids;
 --mainState = states.startScreen;
+--mainState = states.elementEditor;
 
 -- intialization
 function love.load()
