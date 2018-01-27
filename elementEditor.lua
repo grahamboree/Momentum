@@ -6,7 +6,7 @@ require "DataDumper"
 local sidebar_guys = {};
 local placed_guys = {};
 local sidebar_width = 1/16.0;
-
+local buttons = {};
 
 local function randomPlace(template)
 
@@ -21,7 +21,6 @@ end
 local function enter()
   love.keyboard.setKeyRepeat(true)
 
-  
   sidebar_guys = {}; -- rebuild sidebar
   
   local num_classes = #ElementBase.elementClasses;
@@ -30,6 +29,12 @@ local function enter()
   local delta_y = love.graphics.getHeight() / (1+num_classes);
   local y = delta_y/2;
   local x = love.graphics.getWidth() * sidebar_width / 2;
+  local button_y = y / 2;
+  
+  buttons = {
+    ElementCircle:new { radius=30, y = button_y, x = x/2, text = "SAVE" },
+    ElementCircle:new { radius=30, y = button_y, x = 3*x/2, text = "LOAD" },
+    };
   
   for k, class in pairs(ElementBase.elementClasses) do
     local e = class:new {x = x, y = y}
@@ -38,6 +43,9 @@ local function enter()
     
     randomPlace(e);
   end
+  
+  
+
 end
 
 local function exit()
@@ -88,6 +96,24 @@ local function mousepressed(x,y)
   if (template) then
     local dude = randomPlace(template);
   end
+
+  local button_pressed = getHitElement(x,y,buttons);
+  if (button_pressed) then
+    if (button_pressed.text == "SAVE") then 
+      local s = DataDumper(placed_guys);
+      love.filesystem.write("editorLevel", s);
+    end
+    if (button_pressed.text == "LOAD") then
+      local s = love.filesystem.read("editorLevel");
+      local copy_func = loadstring(s);
+      local copy =copy_func();
+      placed_guys = copy;
+  
+    end
+    
+    
+  end
+
 end
 
 local function updateDrag()
@@ -102,6 +128,8 @@ end
 local function mousereleased(x,y)
   updateDrag()
   draggedGuy = nil;
+
+
 
 end
 
@@ -130,6 +158,11 @@ local function draw()
   -- draw the placed elements
   for k, template in pairs(placed_guys) do
     template:draw()
+  end
+  
+  -- draw the buttons
+  for k, button in pairs(buttons) do
+    button:draw()
   end
   
   love.graphics.printf(text, 0, 0, love.graphics.getWidth())
