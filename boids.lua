@@ -140,6 +140,29 @@ local function cohesion(i)
 	return seek(i, centroidX / numNeighbors, centroidY / numNeighbors)
 end
 
+local function alignment(i)
+	local sumX, sumY = 0, 0
+	local hasNeighbors = false
+
+	for i = 1, NUM_BOIDS do
+		if i ~= j and neighbors[i][j] then
+			hasNeighbors = true
+			sumX = sumX + velocities[j][1]
+			sumY = sumY + velocities[j][2]
+		end
+	end
+
+	if not hasNeighbors then
+		return {0, 0}
+	end
+
+	local len = vec2.len(sumX, sumY)
+	return {
+		(sumX / len) * boidconf.maxSpeed - velocities[i][1],
+		(sumY / len) * boidconf.maxSpeed - velocities[i][2]
+	}
+end
+
 local function update(dt)
 	updateNeighbors()
 
@@ -147,10 +170,11 @@ local function update(dt)
 		-- steer
 		local sep = separation(i)
 		local coh = cohesion(i)
+		local ali = alignment(i)
 
 		accelerations[i] = {
-			sep[1] + coh[1],
-			sep[2] + coh[2]
+			sep[1] + coh[1] + ali[1],
+			sep[2] + coh[2] + ali[2]
 		}
 
 		-- damping
@@ -182,7 +206,6 @@ local function update(dt)
 		end
 	end
 end
-
 
 return {
 	draw = draw,
