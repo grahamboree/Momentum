@@ -1,4 +1,3 @@
-vec2 = require "vector2d"
 
 states = {
   boids = require "boids",
