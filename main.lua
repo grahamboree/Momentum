@@ -9,7 +9,13 @@ config = {
 
 -- intialization
 function love.load()
-	love.window.setMode(config.width, config.height, {centered=true, borderless=true, msaa=8})
+  -- ZeroBrane debugging requirement
+  if arg[#arg] == "-debug" then require("mobdebug").start() end
+	
+  -- Disable window decorations
+  love.window.setMode(config.width, config.height, {centered=true, borderless=true, msaa=8})
+  
+  -- Really start
   boids.init()
 end
 
