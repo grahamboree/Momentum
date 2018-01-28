@@ -111,6 +111,7 @@ local function mousepressed(x,y)
       local copy_func = loadstring(s);
       local copy =copy_func();
       placed_guys = copy;
+      activeElements = placed_guys
   
     end
     
