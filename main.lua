@@ -34,7 +34,6 @@ end
 function love.draw()
   love.graphics.clear(20,20,20, 255)
   mainState.draw()
-  love.graphics.circle("line", 800, 450, 300)
 end
 
 function love.mousereleased(...)
