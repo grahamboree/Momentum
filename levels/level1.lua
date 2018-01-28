@@ -1,1 +1,1 @@
-return {{width=30,captured={},color={b=255,r=255,g=255},y=439.85714285713999,class="ElementGoal",fliesNeeded=50,text="0/50",happy=false,numCaptured=0,height=60,x=1539}}
+return {{width=30,captured={},color={b=255,r=255,g=255},y=462.85714285713999,class="ElementGoal",fliesNeeded=0,text="0/50",playerCantDrag=true,happy=false,boidsUpdatedThisFrame=0,numCaptured=0,height=60,x=1538},{boidsUpdatedThisFrame=0,x=773,currentSound=nil,color={b=35,r=35,g=35},y=197.57142857143003,class="ElementCCWVortex",radius=100,text="CCW vortex"}}
