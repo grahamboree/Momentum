@@ -43,8 +43,8 @@ local function enter()
   local button_y = y / 2;
   
   buttons = {
-    ElementCircle:new { radius=30, y = button_y, x = x/2, text = "SAVE" },
-    ElementCircle:new { radius=30, y = button_y, x = 3*x/2, text = "LOAD" },
+    ElementCircle:new { radius=30, y = button_y, x = love.graphics.getWidth() - x, text = "SAVE" },
+    ElementCircle:new { radius=30, y = button_y * 4, x = love.graphics.getWidth() - x, text = "LOAD" },
     };
   
   for k, class in pairs(ElementBase.elementClasses) do
@@ -52,7 +52,7 @@ local function enter()
     table.insert(sidebar_guys, e);
     y = y + delta_y;
     
-    randomPlace(e);
+    --randomPlace(e);
   end
   
   activeElements = placed_guys
@@ -98,6 +98,31 @@ local function getHitElement(x,y,element_list)
   return nil;
 end
 
+function applyClassesAndSet(list)
+    for k,guy in pairs(list) do
+      local class = ElementBase.elementClasses[guy.class];
+      if (not class) then error("Unknown class " .. guy.class) end
+      setmetatable(guy, class);
+      print(guy.class)
+      guy:draw()
+    end
+    
+    
+    
+    placed_guys = list;
+    activeElements = placed_guys
+end
+
+
+function loadElementListFromFile(filename)
+  local s = love.filesystem.read(filename);
+    local copy_func = loadstring(s);
+    local copy =copy_func();
+    
+    applyClassesAndSet(copy)
+end
+
+
 local function mousepressed(x,y)
   local placed = getHitElement(x,y,placed_guys);
   if (placed) then startDrag(x,y,placed) end
@@ -114,18 +139,7 @@ local function mousepressed(x,y)
       love.filesystem.write(level_filename, s);
     end
     if (button_pressed.text == "LOAD") then
-      local s = love.filesystem.read(level_filename);
-      local copy_func = loadstring(s);
-      local copy =copy_func();
-      
-      
-      for k,guy in pairs(copy) do
-        local class = ElementBase.elementClasses[guy.class];
-        setmetatable(guy, class);
-      end
-      
-      placed_guys = copy;
-      activeElements = placed_guys
+      loadElementListFromFile(level_filename);
     end
   end
 end
@@ -135,7 +149,6 @@ local function updateDrag()
     draggedGuy.x = love.mouse.getX() + dragOffset.dx;
     draggedGuy.y = love.mouse.getY() +dragOffset.dy;
   end
-  
 end
 
 local function mousereleased(x,y)

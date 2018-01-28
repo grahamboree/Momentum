@@ -1,8 +1,17 @@
 
 --[[ 
 TODO:
+Level shell
+  select a level
+  win a level - text syas WIN when you have won
+  restart a level    -  text says "R" to restart
+  quit a level -text says ESC to exit 
+
+
 Goal - lantern, shows 0/50 
        when all lanterns are full, you win
+
+
 Emitter
 Elements can spin in editor
 Destroy bug element
@@ -19,6 +28,9 @@ incorporate audio
 states = {
   startScreen = require "startScreen",
   elementEditor =require "elementEditor",
+  levelList = require "levelSelect",
+  playLevel =require "playLevel",
+  boids = require "boids",
 }
 
 -- game config
@@ -32,7 +44,8 @@ config = {
 }
 
 --mainState = states.startScreen;
-mainState = states.elementEditor;
+--mainState = states.elementEditor;
+mainState = states.levelList;
 
 -- intialization
 function love.load()
