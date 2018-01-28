@@ -153,6 +153,8 @@ local function clearCaptures()
       guy.numCaptured = 0
     end
     
+    guy.currentSound = nil;
+    
   end
   
 end
