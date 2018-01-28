@@ -21,7 +21,7 @@ function ElementGoal:setDefaults()
   self.class = "ElementGoal"
 end
 
-function ElementGoal:preModifyAllBoids(boidData) 
+function ElementGoal:preModifyAllBoids(e, boidData) 
 	self:setDefaults()
   
   -- uncapture dead boids
@@ -99,5 +99,7 @@ function ElementGoal:modifyBoid(i, boidData, addIfPossible)
 
     boidData.velocities[i][1] = boidVX
     boidData.velocities[i][2] = boidVY
+    
+    self.boidsUpdatedThisFrame = self.boidsUpdatedThisFrame + 1
   end
 end

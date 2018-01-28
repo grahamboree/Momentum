@@ -93,6 +93,8 @@ function ElementRectangle:modifyBoid(i, boidData, addIfPossible)
 
     boidData.velocities[i][1] = boidVX
     boidData.velocities[i][2] = boidVY
+    
+    self.boidsUpdatedThisFrame = self.boidsUpdatedThisFrame + 1
   end
 end
 

@@ -273,7 +273,7 @@ local function update(dt)
 	end
 
   for e, element in pairs(activeElements) do
-		element:preModifyAllBoids(boidData)
+		element:preModifyAllBoids(e, boidData)
 	end
 
 	for i = 1, NUM_BOIDS do
