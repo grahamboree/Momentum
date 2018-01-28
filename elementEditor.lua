@@ -1,6 +1,7 @@
 require "Elements/elementCircle"
 require "Elements/elementRectangle"
 require "Elements/elementGravityWell"
+require "Elements/elementRepulsor"
 
 require "utils"
 require "DataDumper"

@@ -6,12 +6,12 @@ vec2 = require "vector2d"
 ElementRepulsor = ElementCircle:new();
 
 -- remember this subclass for the editor
-table.insert(ElementBase.elementClasses, ElementRepulsor);
+ElementBase.elementClasses.ElementRepulsor = ElementRepulsor
 
 
 function ElementRepulsor:setDefaults()
   if not self.radius then self.radius = 100 end
-  if not self.text then self.text = "grav" end
+  if not self.text then self.text = "rep" end
   if not self.color then self.color = { r = 35, g = 35, b = 35 } end
 end
 
