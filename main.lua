@@ -21,6 +21,8 @@ states = {
   elementEditor =require "elementEditor",
 }
 
+audio = require "audio"
+
 -- game config
 config = {
 	width = 1600,
@@ -44,6 +46,11 @@ function love.load()
   
   -- Really start
   if mainState.enter then mainState.enter() end
+
+  -- preloads audio assets
+  audio.load()
+
+  sounds.music.level1:play()
 end
 
 function love.update(dt)
