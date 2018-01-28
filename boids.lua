@@ -8,7 +8,9 @@ boidconf = {
 	neighborRadius = 30,
 	sepWeight = 0,
 	aliWeight = 0,
-	cohWeight = 0
+	cohWeight = 0,
+
+	startVelocityVariance = 0.1
 }
 
 active = {}
@@ -44,7 +46,7 @@ local function init()
 end
 
 local function draw()
-	love.graphics.setColor(255,225,141)
+	love.graphics.setColor(255, 225, 141)
 
 	-- draw all the things
 	for i = 1, NUM_BOIDS do
@@ -202,7 +204,6 @@ local function steer(i)
 	local forceLeft2 = maxF2
 	local result = {0, 0}
 
-
 	local addIfPossible = function(force, scaler)
 		force[1] = force[1] * scaler
 		force[2] = force[2] * scaler
@@ -220,9 +221,9 @@ local function steer(i)
 		element:modifyBoid(i, boidData, addIfPossible)
 	end
 
-	addIfPossible(alignment(i), boidconf.aliWeight)
-	addIfPossible(separation(i), boidconf.sepWeight)
-	addIfPossible(cohesion(i), boidconf.cohWeight)
+	--addIfPossible(alignment(i), boidconf.aliWeight)
+	--addIfPossible(separation(i), boidconf.sepWeight)
+	--addIfPossible(cohesion(i), boidconf.cohWeight)
 
 	return result
 end
@@ -234,12 +235,28 @@ local function update(dt)
 		currentboid = ((currentboid + 1) % NUM_BOIDS) + 1
 		if not active[currentboid] then
 			active[currentboid] = true
-			velocities[currentboid][1] = 1.44 * boidconf.maxSpeed
-			velocities[currentboid][2] = 1.44 * boidconf.maxSpeed
 
-			randX, randY = vec2.randomDirection(30, 30)
-			positions[currentboid][1] = randX + 50
-			positions[currentboid][2] = randY + 50
+			local posX, posY = vec2.randomDirection(30, 30)
+			positions[currentboid][1] = posX + 50
+			positions[currentboid][2] = posY + 50
+
+			if true then 
+				-- sqrt(2) = 1.41421356237
+				local velX = 1.41421356237
+				local velY = 1.41421356237
+				velX, velY = vec2.mul(boidconf.maxSpeed, velX, velY)
+
+				local phi = boidconf.startVelocityVariance * normNoise(posX, posY)
+				velX, velY = vec2.rotate(phi, velX, velY)
+
+				velocities[currentboid][1] = velX
+				velocities[currentboid][2] = velY
+			else
+				-- old way
+				velocities[currentboid][1] = 1.44 * boidconf.maxSpeed
+				velocities[currentboid][2] = 1.44 * boidconf.maxSpeed
+			end
+
 		end
 	end
 
