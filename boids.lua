@@ -243,6 +243,10 @@ local function update(dt)
 		end
 	end
 
+  for e, element in pairs(activeElements) do
+		element:preModifyAllBoids(boidData)
+	end
+
 	for i = 1, NUM_BOIDS do
 		if active[i] then
 			accelerations[i] = steer(i)

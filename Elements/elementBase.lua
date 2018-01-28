@@ -47,3 +47,6 @@
 
   function ElementBase:modifyBoid(i, boidData, addIfPossible) end
   
+  function ElementBase:preModifyAllBoids(boidData) end
+
+  

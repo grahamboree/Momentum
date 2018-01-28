@@ -1,4 +1,21 @@
 
+--[[ 
+TODO:
+Goal - lantern, shows 0/50 
+       when all lanterns are full, you win
+Emitter
+Elements can spin in editor
+Destroy bug element
+
+
+Level select screen
+make some levels
+find some art
+
+incorporate audio
+
+]]--
+
 states = {
   startScreen = require "startScreen",
   elementEditor =require "elementEditor",

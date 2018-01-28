@@ -2,6 +2,7 @@ require "Elements/elementCircle"
 require "Elements/elementRectangle"
 require "Elements/elementGravityWell"
 require "Elements/elementRepulsor"
+require "Elements/elementGoal"
 
 require "utils"
 require "DataDumper"

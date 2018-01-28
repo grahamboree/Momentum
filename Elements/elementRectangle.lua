@@ -14,18 +14,30 @@ ElementBase.elementClasses.ElementRectangle = ElementRectangle;
 function ElementRectangle:draw()
   self:setDrawColor();
   love.graphics.rectangle("fill", self.x - self.width/2, self.y -self.height/2, self.width, self.height);
+  
+  if (self.text) then
+    love.graphics.setColor(0,255,255);
+    love.graphics.printf(self.text, self.x -self.width/2, self.y, self.width, "center");
+  end
+
 end
 
 function ElementRectangle:pointIsInside(x,y)
   self:setDefaults();
 
-  local dx = x - self.x
-  local dy = y - self.y
-  
-  if (dx < -self.width/2) then return false end
-  if (dx > self.width/2) then return false end
-  if (dy < -self.height/2) then return false end
-  if (dy > self.height/2) then return false end
+  if (x ~= x) then return false end
+  if (y ~= y) then return false end
+    
+
+  local xMin = self.x - self.width / 2
+  local xMax = self.x + self.width / 2
+  local yMin = self.y - self.height / 2
+  local yMax = self.y + self.height / 2
+
+  if (x < xMin) then return false end
+  if (x > xMax) then return false end
+  if (y < yMin) then return false end
+  if (y > yMax) then return false end
   
   return true;
 end
