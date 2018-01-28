@@ -17,8 +17,8 @@ function ElementGravityWell:setDefaults()
 end
 
 function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
-  
 	self:setDefaults()
+
 	local deltaX = self.x - boidData.positions[i][1]
 	local deltaY = self.y - boidData.positions[i][2]
 
@@ -26,8 +26,21 @@ function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
 	local radius2 = self.radius * self.radius
 
 	if len2 < radius2 then
-		local scaler = (len2 / radius2) * boidconf.maxForce
-		local forceX, forceY = vec2.normalize(unpack(seek(i, self.x, self.y)))
-		addIfPossible({forceY, -forceX}, scaler)
+		local velX = boidData.velocities[i][1]
+		local velY = boidData.velocities[i][2]
+
+		-- tangent to the velocity
+		local tanX = velY
+		local tanY = -velX
+
+		local phi = -config.gravityWellStrenth * (1-(len2 / radius2))
+		if vec2.dot(deltaX, deltaY, tanX, tanY) < 0 then
+			phi = phi * -1
+		end
+
+		-- rotate the velocity
+		local newX, newY = vec2.rotate(phi, velX, velY)
+		boidData.velocities[i][1] = newX
+		boidData.velocities[i][2] = newY
 	end
 end
