@@ -1,0 +1,1 @@
+return {{width=30,captured={},color={b=255,r=255,g=255},y=63.857142857139991,class="ElementGoal",fliesNeeded=50,text="0/50",happy=false,numCaptured=0,height=60,x=809}}
