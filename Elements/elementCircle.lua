@@ -1,4 +1,5 @@
 require "Elements/elementBase"
+vec2 = require "vector2d"
 
 --[[ needs "radius" in pixels ]]--
 
@@ -33,4 +34,31 @@ function ElementCircle:setDefaults()
   if not self.color then self.color = { r = 255, g = 0, b = 0 } end
 end
 
-    
+function ElementCircle:modifyBoid(i, boidData, addIfPossible)
+  self:setDefaults()
+  local deltaX = boidData.positions[i][1] - self.x
+  local deltaY = boidData.positions[i][2] - self.y
+
+  local len2 = vec2.len2(deltaX, deltaY)
+
+  local range2 = self.radius * self.radius
+
+  if len2 < range2 then
+    local boidVX = boidData.velocities[i][1]
+    local boidVY = boidData.velocities[i][2]
+
+    local x, y = vec2.mirror(boidVX, boidVY, deltaX, deltaY)
+    boidData.velocities[i][1] = x
+    boidData.velocities[i][2] = y
+
+    local normDeltaX, normDeltaY = vec2.normalize(deltaX, deltaY)
+    normDeltaX = normDeltaX * self.radius
+    normDeltaY = normDeltaY * self.radius
+
+
+    boidData.positions[i][1] = self.x + normDeltaX
+    boidData.positions[i][2] = self.y + normDeltaY
+  
+
+  end
+end
