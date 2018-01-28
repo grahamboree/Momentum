@@ -1,7 +1,7 @@
 vec2 = require "vector2d"
 require "utils"
 
-NUM_BOIDS = 1000
+NUM_BOIDS = 5000
 boidconf = {
 	maxSpeed = 200,
 	maxForce = 3000,
@@ -10,7 +10,12 @@ boidconf = {
 	aliWeight = 0,
 	cohWeight = 0,
 
-	startVelocityVariance = 0.1
+	startVelDirVariance = 0.001,
+	startVelMagVariance = 20,
+	wanderVariance = 0,
+	jitter = 1,
+
+	emissionRate = 20
 }
 
 active = {}
@@ -18,13 +23,15 @@ accelerations = {}
 velocities = {}
 positions = {}
 neighbors = {}
+modifiedThisUpdate = {}
 
 boidData = {
 	active = active,
 	accelerations = accelerations,
 	velocities = velocities,
 	positions = positions,
-	neighbors = neighbors
+	neighbors = neighbors,
+	modifiedThisUpdate = modifiedThisUpdate
 }
 
 currentboid = 0
@@ -37,6 +44,8 @@ local function init()
 		accelerations[i] = {0, 0}
 		velocities[i] = {0, 0}
 		positions[i] = {0, 0}
+
+		modifiedThisUpdate[i] = false
 		
 		neighbors[i] = {}
 		for j = 1, NUM_BOIDS do
@@ -188,16 +197,6 @@ local function alignment(i)
 	return steerToVelocity(i, sumX, sumY)
 end
 
-local function attractor(i)
-	local len = vec2.len(positions[i][1] - 800, positions[i][2] - 450)
-
-	if len > 300 then
-		return {0, 0}
-	end
-	
-	return steerToVelocity(i, boidconf.maxSpeed, 0)
-end
-
 local function steer(i)
 	local maxF2 = boidconf.maxForce * boidconf.maxForce
 
@@ -221,6 +220,21 @@ local function steer(i)
 		element:modifyBoid(i, boidData, addIfPossible)
 	end
 
+	local posX = positions[i][1]
+	local posY = positions[i][2]
+	local velX = velocities[i][1]
+	local velY = velocities[i][2]
+
+	--local phi = boidconf.wanderVariance * normNoise(posX * 10, posY * 10)
+
+	local noise = normNoise(posX * 0.001 + i, posY * 0.001 + i)
+	-- noise = love.math.random() * 2 - 1
+
+	local phi = boidconf.wanderVariance * noise
+	velX, velY = vec2.rotate(phi, velX, velY)
+	velocities[i][1] = velX
+	velocities[i][2] = velY
+
 	--addIfPossible(alignment(i), boidconf.aliWeight)
 	--addIfPossible(separation(i), boidconf.sepWeight)
 	--addIfPossible(cohesion(i), boidconf.cohWeight)
@@ -229,34 +243,32 @@ local function steer(i)
 end
 
 local function update(dt)
-	updateNeighbors()
+	--updateNeighbors()
 
-	for i = 1, 5 do
-		currentboid = ((currentboid + 1) % NUM_BOIDS) + 1
-		if not active[currentboid] then
-			active[currentboid] = true
+	local spawnedThisFrame = 0
+	for i = 1, NUM_BOIDS do
+		if not active[i] then
+			active[i] = true
 
 			local posX, posY = vec2.randomDirection(30, 30)
-			positions[currentboid][1] = posX + 50
-			positions[currentboid][2] = posY + 50
+			positions[i][1] = posX + 50
+			positions[i][2] = posY + 50
 
-			if true then 
-				-- sqrt(2) = 1.41421356237
-				local velX = 1.41421356237
-				local velY = 1.41421356237
-				velX, velY = vec2.mul(boidconf.maxSpeed, velX, velY)
+			local velX = 1.41421356237 -- sqrt(2)
+			local velY = 1.41421356237
+			velX, velY = vec2.mul(boidconf.maxSpeed, velX, velY)
 
-				local phi = boidconf.startVelocityVariance * normNoise(posX, posY)
-				velX, velY = vec2.rotate(phi, velX, velY)
+			local phi = boidconf.startVelDirVariance * normNoise(posX, posY)
+			velX, velY = vec2.rotate(phi, velX, velY)
 
-				velocities[currentboid][1] = velX
-				velocities[currentboid][2] = velY
-			else
-				-- old way
-				velocities[currentboid][1] = 1.44 * boidconf.maxSpeed
-				velocities[currentboid][2] = 1.44 * boidconf.maxSpeed
+			velocities[i][1] = velX
+			velocities[i][2] = velY
+
+			spawnedThisFrame = spawnedThisFrame + 1
+
+			if spawnedThisFrame >= boidconf.emissionRate then
+				break
 			end
-
 		end
 	end
 
@@ -276,20 +288,24 @@ local function update(dt)
 			positions[i][1] = positions[i][1] + velocities[i][1] * dt
 			positions[i][2] = positions[i][2] + velocities[i][2] * dt
 
-			-- wrap horizontal
-			if positions[i][1] > config.width then
-				active[i] = false
-			elseif positions[i][1] < 0 then
-				active[i] = false
+			-- only apply jitter if we haven't been modified by an object this frame.
+			if not modifiedThisUpdate[i] then
+				local posX = positions[i][1]
+				local posY = positions[i][2]
+
+				local jitterNoise = normNoise(posX * 0.001 + i, posY * 0.001 + i) * 2 * 3.14159
+
+				local jitterX, jitterY = vec2.rotate(jitterNoise, 0, 1)
+				jitterX, jitterY = vec2.mul(boidconf.jitter, jitterX, jitterY)
+
+				positions[i][1] = positions[i][1] + jitterX
+				positions[i][2] = positions[i][2] + jitterY
 			end
 
-			-- wrap vertical
-			if positions[i][2] > config.height then
-				active[i] = false
-			elseif positions[i][2] < 0 then
-				active[i] = false
-			end
+			active[i] = positions[i][1] <= config.width and positions[i][1] >= 0
+				and positions[i][2] <= config.height and positions[i][2] >= 0
 		end
+		modifiedThisUpdate[i] = false
 	end
 end
 

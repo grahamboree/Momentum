@@ -42,5 +42,7 @@ function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
 		local newX, newY = vec2.rotate(phi, velX, velY)
 		boidData.velocities[i][1] = newX
 		boidData.velocities[i][2] = newY
+
+		boidData.modifiedThisUpdate[i] = true
 	end
 end
