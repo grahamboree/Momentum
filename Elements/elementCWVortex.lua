@@ -3,20 +3,19 @@ vec2 = require "vector2d"
 
 --[[ needs "radius" in pixels ]]--
 
-ElementGravityWell = ElementCircle:new();
+ElementCWVortex = ElementCircle:new();
 
 -- remember this subclass for the editor
-ElementBase.elementClasses.ElementGravityWell = ElementGravityWell;
+ElementBase.elementClasses.ElementCWVortex = ElementCWVortex;
 
-
-function ElementGravityWell:setDefaults()
+function ElementCWVortex:setDefaults()
   if not self.radius then self.radius = 100 end
-  if not self.text then self.text = "grav" end
+  if not self.text then self.text = "CW vortex" end
   if not self.color then self.color = { r = 35, g = 35, b = 35 } end
-  self.class = "ElementGravityWell"
+  self.class = "ElementCWVortex"
 end
 
-function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
+function ElementCWVortex:modifyBoid(i, boidData, addIfPossible)
 	self:setDefaults()
 
 	local deltaX = self.x - boidData.positions[i][1]
@@ -33,10 +32,7 @@ function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
 		local tanX = velY
 		local tanY = -velX
 
-		local phi = -config.gravityWellStrenth * (1-(len2 / radius2))
-		if vec2.dot(deltaX, deltaY, tanX, tanY) < 0 then
-			phi = phi * -1
-		end
+		local phi = config.vortexStrength * (1-(len2 / radius2))
 
 		-- rotate the velocity
 		local newX, newY = vec2.rotate(phi, velX, velY)

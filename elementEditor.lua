@@ -1,7 +1,8 @@
 require "Elements/elementCircle"
 require "Elements/elementRectangle"
-require "Elements/elementGravityWell"
 require "Elements/elementRepulsor"
+require "Elements/elementCWVortex"
+require "Elements/elementCCWVortex"
 
 require "utils"
 require "DataDumper"
@@ -89,7 +90,6 @@ local function startDrag(x,y,drag_me)
   dragOffset = { dx = drag_me.x - x, dy = drag_me.y -y };
 end
 
-
 local function getHitElement(x,y,element_list)
   for k, element in pairs(element_list) do
     if (element:pointIsInside(x,y)) then return element end
@@ -125,12 +125,8 @@ local function mousepressed(x,y)
       
       placed_guys = copy;
       activeElements = placed_guys
-  
     end
-    
-    
   end
-
 end
 
 local function updateDrag()
@@ -141,29 +137,17 @@ local function updateDrag()
   
 end
 
-
 local function mousereleased(x,y)
   updateDrag()
   draggedGuy = nil;
-
-
-
 end
-
-
-
 
 local function update(dt)
   updateDrag();  
   boids.update(dt)
 end
 
-
-    
-
-
-local function draw()
-  
+local function draw()  
   -- draw sidebar box
   love.graphics.setColor(50,50,50);
   love.graphics.rectangle("fill", 0,0, love.graphics.getWidth() * sidebar_width, love.graphics.getHeight());
@@ -187,8 +171,6 @@ local function draw()
 
   boids.draw()
 end
-
-
 
 return {
   draw = draw,

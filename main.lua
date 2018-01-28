@@ -10,7 +10,8 @@ config = {
 	height = 900,
   showWindowChrome = false,
 
-  gravityWellStrenth = 0.05
+  vortexStrength = 0.05,
+  repulsorStrength = 0.05
 }
 
 --mainState = states.startScreen;
