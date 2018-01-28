@@ -7,10 +7,6 @@ Level shell
   
 
 
-Goal - lantern, shows 0/50 
-       when all lanterns are full, you win
-
-
 Emitter
 Elements can spin in editor
 Destroy bug element

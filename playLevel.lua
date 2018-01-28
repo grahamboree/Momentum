@@ -1,26 +1,28 @@
 require "elementEditor"
+require "audio"
+
+musicIndex = 1
 
 local function enter()
   
   states.elementEditor.enter()
   
-  -- load level
-  
-  --local s = levels[levelToLoad]
-  --local func = loadstring(s)
-  --local guys =func()
   local unclassed = require("Levels/" .. levelToLoad)
   applyClassesAndSet( unclassed )
   
-    
-  foo = activeElements
-
-    for k, template in pairs(unclassed) do
-    template:draw()
-    end
-  
   -- reset boids
   states.boids.enter()
+  
+  -- choose some music!
+  sounds.music.level1:stop()
+	sounds.music.level2:stop()
+	sounds.music.level3:stop()
+  
+  sounds.music["level" .. musicIndex]:play()
+  
+  musicIndex = musicIndex + 1
+  if (musicIndex > 3) then musicIndex = 1 end
+
   
 end
 
