@@ -49,7 +49,7 @@ local function draw()
 	-- draw all the things
 	for i = 1, NUM_BOIDS do
 		if active[i] then
-			love.graphics.circle("fill", positions[i][1], positions[i][2], 2, 5)
+			love.graphics.circle("fill", positions[i][1], positions[i][2], 3, 5)
 		end
 	end
 end
