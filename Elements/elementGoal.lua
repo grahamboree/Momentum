@@ -51,6 +51,11 @@ function ElementGoal:preModifyAllBoids(boidData)
   self.happy = (self.numCaptured >= self.fliesNeeded)
 end
   
+function ElementGoal:AllowWin()
+  self:setDefaults()
+  return (self.numCaptured >= self.fliesNeeded)
+end
+
 
 function ElementGoal:modifyBoid(i, boidData, addIfPossible)
   self:setDefaults()

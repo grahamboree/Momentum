@@ -27,6 +27,11 @@ function ElementBase:draw()
   print "No draw method for element!";
 end
 
+function ElementBase:AllowWin()
+  return true
+end
+
+
 function ElementBase:pointIsInside(x,y)
   self:setDefaults();
   return false

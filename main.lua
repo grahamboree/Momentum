@@ -2,10 +2,9 @@
 --[[ 
 TODO:
 Level shell
-  select a level
+ 
   win a level - text syas WIN when you have won
-  restart a level    -  text says "R" to restart
-  quit a level -text says ESC to exit 
+  
 
 
 Goal - lantern, shows 0/50 

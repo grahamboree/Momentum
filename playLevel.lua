@@ -25,6 +25,19 @@ local function enter()
 end
 
 
+local function weWon()
+  -- see how many goal elements are happy
+  for k, element in pairs(activeElements)do
+    if (not element:AllowWin()) then
+      return false
+    end
+    
+  end
+  
+  return true
+end
+
+
 local function draw()
   -- draw the placed elements
   for k, template in pairs(activeElements) do
@@ -33,8 +46,17 @@ local function draw()
   
   boids.draw()
   
-  love.graphics.print("R to restart     ESC to exit puzzle", 10, love.graphics.getHeight() - 100)
+  local y = love.graphics.getHeight() - 100;
+  love.graphics.print("R to restart     ESC to exit puzzle", 10, y )
+  
+  if (weWon()) then
+    
+    love.graphics.print("YOU WIN!", 600, y)
+  
+  end
+  
 end
+
 
 
 local function update(dt)
