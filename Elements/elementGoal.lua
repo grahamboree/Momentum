@@ -11,7 +11,7 @@ ElementBase.elementClasses.ElementGoal = ElementGoal;
 function ElementGoal:setDefaults()
   if not self.width then self.width = 30 end
   if not self.height then self.height = 60 end
-  if not self.fliesNeeded then self.fliesNeeded = 500 end
+  if not self.fliesNeeded then self.fliesNeeded = 50 end
   if not self.text then self.text = "goal" end
   if not self.color then self.color = { r = 255, g = 255, b = 255 } end
   if not self.captured then self.captured = {} end
@@ -76,7 +76,7 @@ function ElementGoal:modifyBoid(i, boidData, addIfPossible)
 
     if (boidX < xMin) then
       boidX = xMin
-      boidVX = - boidVX * .5
+      boidVX = - boidVX * .9
     end
 
     if (boidX > xMax) then
@@ -86,7 +86,7 @@ function ElementGoal:modifyBoid(i, boidData, addIfPossible)
     
     if (boidY < yMin) then
       boidY = yMin
-      boidVY = - boidVY * .5
+      boidVY = - boidVY * .9
     end
     
     if (boidY > yMax) then
