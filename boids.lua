@@ -6,9 +6,9 @@ boidconf = {
 	maxSpeed = 200,
 	maxForce = 3000,
 	neighborRadius = 30,
-	sepWeight = 1,
-	aliWeight = 1,
-	cohWeight = 0.2
+	sepWeight = 0,
+	aliWeight = 0,
+	cohWeight = 0
 }
 
 active = {}
