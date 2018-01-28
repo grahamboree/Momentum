@@ -5,7 +5,11 @@
 --require "Levels/stringLevels"
 levelList = 
 {
-    "sample",
+    "level1",
+    "level2",
+    "level3",
+    "level4",
+    "level5",
   }
 
 local textX = 400;
