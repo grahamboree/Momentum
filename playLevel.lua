@@ -8,7 +8,12 @@ local function enter()
   states.elementEditor.enter()
   
   local unclassed = require("Levels/" .. levelToLoad)
-  applyClassesAndSet( unclassed )
+  copy = {}
+  for k,v in pairs(unclassed) do
+    copy[k] = v
+  end
+  
+  applyClassesAndSet( copy )
   
   -- reset boids
   states.boids.enter()
@@ -51,10 +56,20 @@ local function draw()
   local y = love.graphics.getHeight() - 100;
   love.graphics.print("R to restart     ESC to exit puzzle", 10, y )
   
+  local win_sound = sounds.sfx["win"];
+  
   if (weWon()) then
     
     love.graphics.print("YOU WIN!", 600, y)
-  
+    if not win_sound:isPlaying() then 
+      win_sound:play()
+    end
+    
+  else
+    if win_sound:isPlaying() then
+      win_sound:stop()
+    end
+    
   end
   
 end

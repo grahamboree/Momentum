@@ -29,6 +29,9 @@ local function enter()
     buttons[i] = button;
     y = y + yDelta
   end
+  
+  local editor_button = ElementRectangle:new{y =textY, x = 3*textX, width=width, height= yDelta-buttonMargin, color = {r=255,g=255,b=0 }, text="FREEPLAY" };
+  buttons.e = editor_button
 
 end
 
@@ -45,8 +48,15 @@ end
 local function mousereleased()
   for i, button in pairs(buttons) do
     if (button:pointIsInside(love.mouse.getX(), love.mouse.getY())) then
-      levelToLoad = button.text
+      
+      if (button.text == "FREEPLAY") then 
+        setMainState(states.elementEditor)
+      else
+      
+        levelToLoad = button.text
         setMainState(states.playLevel);
+      end
+      
     end
   end
   
