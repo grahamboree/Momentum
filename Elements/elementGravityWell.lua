@@ -23,16 +23,11 @@ function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
 	local deltaY = self.y - boidData.positions[i][2]
 
 	local len2 = vec2.len2(deltaX, deltaY)
+	local radius2 = self.radius * self.radius
 
-	local range2 = self.radius * self.radius
-
-	if len2 < range2 then
-		local scaler = len2 / range2
-		scaler = scaler * boidconf.maxForce
-
-		local force = seek(i, self.x, self.y)
-		forceY, forceX = vec2.normalize(force[1], force[2])
-
-		addIfPossible({forceX, -forceY}, scaler)
+	if len2 < radius2 then
+		local scaler = (len2 / radius2) * boidconf.maxForce
+		local forceX, forceY = vec2.normalize(unpack(seek(i, self.x, self.y)))
+		addIfPossible({forceY, -forceX}, scaler)
 	end
 end
