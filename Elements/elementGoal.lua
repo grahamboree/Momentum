@@ -43,15 +43,12 @@ function ElementGoal:preModifyAllBoids(boidData)
       if self:pointIsInside(boidX, boidY) then
         self.numCaptured = self.numCaptured + 1;
         self.captured[i] = true;
-        print(i .. " at " .. boidX .. "x" .. boidY)
-        
       end
     end
   end
   
   self.text = self.numCaptured .. "/" .. self.fliesNeeded;
   self.happy = (self.numCaptured >= self.fliesNeeded)
-  print("tot = " .. self.numCaptured)
 end
   
 
@@ -70,9 +67,6 @@ function ElementGoal:modifyBoid(i, boidData, addIfPossible)
     local boidY = boidData.positions[i][2]
     local boidVX = boidData.velocities[i][1]
     local boidVY = boidData.velocities[i][2]
-
-    if (boidVX ~= boidVX) then print("xNaN before!") end
-
 
     if (boidX < xMin) then
       boidX = xMin
@@ -93,8 +87,6 @@ function ElementGoal:modifyBoid(i, boidData, addIfPossible)
       boidY = yMax
       boidVY = - boidVY
     end
-
-    if (boidVX ~= boidVX) then print("xNaN after!") end
 
     boidData.positions[i][1] = boidX
     boidData.positions[i][2] = boidY
