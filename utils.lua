@@ -32,3 +32,13 @@ function tablelength(T)
   for _ in pairs(T) do count = count + 1 end
   return count
 end
+
+-- 1d noise normalized to [-1, 1]
+function normNoise(x)
+	return love.math.noise(x) * 2 - 1
+end
+
+-- 2d noise normalized to [-1, 1]
+function normNoise(x, y)
+	return love.math.noise(x, y) * 2 - 1
+end

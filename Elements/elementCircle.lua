@@ -8,8 +8,6 @@ ElementCircle = ElementBase:new();
 -- remember this subclass for the editor
 ElementBase.elementClasses.ElementCircle = ElementCircle;
 
-
-
 function ElementCircle:draw()
   self:setDrawColor();
   love.graphics.circle("fill", self.x, self.y, self.radius);
@@ -56,9 +54,7 @@ function ElementCircle:modifyBoid(i, boidData, addIfPossible)
     normDeltaX = normDeltaX * self.radius
     normDeltaY = normDeltaY * self.radius
 
-
     boidData.positions[i][1] = self.x + normDeltaX * 1.1
     boidData.positions[i][2] = self.y + normDeltaY * 1.1
-
   end
 end

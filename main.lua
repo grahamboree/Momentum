@@ -26,8 +26,10 @@ config = {
 	width = 1600,
 	height = 900,
   showWindowChrome = false,
-}
 
+  vortexStrength = 0.05,
+  repulsorStrength = 0.05
+}
 
 --mainState = states.startScreen;
 mainState = states.elementEditor;
@@ -61,7 +63,6 @@ function love.mousepressed(...)
   if (mainState.mousepressed) then mainState.mousepressed(...) end
 end
 
-
 function love.textinput(text)
   if (mainState.textinput) then mainState.textinput(text) end
 end
@@ -69,8 +70,6 @@ end
 function love.keypressed(...)
   if (mainState.keypressed) then mainState.textinput(...) end
 end
-
-
 
 function setMainState(state)
   if mainState and mainState.exit then mainState.exit() end
