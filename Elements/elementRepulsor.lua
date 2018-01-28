@@ -12,6 +12,7 @@ function ElementRepulsor:setDefaults()
   if not self.radius then self.radius = 100 end
   if not self.text then self.text = "rep" end
   if not self.color then self.color = { r = 35, g = 35, b = 35 } end
+  self.class = "ElementRepulsor"
 end
 
 function ElementRepulsor:modifyBoid(i, boidData, addIfPossible)

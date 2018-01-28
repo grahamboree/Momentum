@@ -101,6 +101,7 @@ end
 function applyClassesAndSet(list)
     for k,guy in pairs(list) do
       local class = ElementBase.elementClasses[guy.class];
+      if (not guy.class) then error ("No class data!") end
       if (not class) then error("Unknown class " .. guy.class) end
       setmetatable(guy, class);
       print(guy.class)
@@ -145,9 +146,24 @@ local function mousepressed(x,y)
     end
   end
 
+local function clearCaptures()
+  for k, guy in pairs(activeElements) do
+    if (guy.class == "ElementGoal") then
+      guy.captured = {}
+      guy.numCaptured = 0
+    end
+    
+  end
+  
+end
+
+
   local button_pressed = getHitElement(x,y,buttons);
   if (button_pressed) then
     if (button_pressed.text == "SAVE") then 
+      
+      clearCaptures()
+      
       local s = tserialize(placed_guys)
       love.filesystem.write(level_filename, s);
     end
