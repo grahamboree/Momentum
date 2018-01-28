@@ -6,9 +6,7 @@
 levelList = 
 {
     "sample",
-    "goof",
-    "The End of the World",
-}
+  }
 
 local textX = 400;
 local width = 400;
@@ -31,6 +29,7 @@ end
 
 
 local function draw()
+  
   local y = textY;
   for i, button in pairs(buttons) do
     button:draw()

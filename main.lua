@@ -88,7 +88,7 @@ function love.textinput(text)
 end
 
 function love.keypressed(...)
-  if (mainState.keypressed) then mainState.textinput(...) end
+  if (mainState.keypressed) then mainState.keypressed(...) end
 end
 
 function setMainState(state)

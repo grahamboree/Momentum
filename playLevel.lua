@@ -32,6 +32,8 @@ local function draw()
   end
   
   boids.draw()
+  
+  love.graphics.print("R to restart     ESC to exit puzzle", 10, love.graphics.getHeight() - 100)
 end
 
 
@@ -39,7 +41,18 @@ local function update(dt)
   boids.update(dt)
 end
 
+local function keypressed(key)
+    if key == "r" then
+        setMainState(states.playLevel);
+    end
+    
+    if key == "escape" then
+      setMainState(states.levelList);
+      end
+end
+
 
 return { enter = enter,
   draw = draw,
-  update=update,};
+  update=update,
+  keypressed=keypressed};
