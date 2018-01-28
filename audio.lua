@@ -21,19 +21,21 @@ local function load()
 	sounds.sfx["selectionclick1"] = love.audio.newSource("SFX/selectionclick1.wav", "static")
 	sounds.sfx["selectionclick2"] = love.audio.newSource("SFX/selectionclick2.wav", "static")
 
-	sounds.sfx["objectsound1"] = love.audio.newSource("SFX/objectsound1_loop.wav", "static")
-	sounds.sfx["objectsound2"] = love.audio.newSource("SFX/objectsound2_loop.wav", "static")
-	sounds.sfx["objectsound3"] = love.audio.newSource("SFX/objectsound3_loop.wav", "static")
-	sounds.sfx["objectsound4"] = love.audio.newSource("SFX/objectsound4_loop.wav", "static")
-	sounds.sfx["objectsound5"] = love.audio.newSource("SFX/objectsound5_loop.wav", "static")
-	sounds.sfx["objectsound6"] = love.audio.newSource("SFX/objectsound6_loop.wav", "static")
+	sounds.sfx["objectsound1"] = "SFX/objectsound1_loop.wav"
+	sounds.sfx["objectsound2"] = "SFX/objectsound2_loop.wav"
+	sounds.sfx["objectsound3"] = "SFX/objectsound3_loop.wav"
+	sounds.sfx["objectsound4"] = "SFX/objectsound4_loop.wav"
+	sounds.sfx["objectsound5"] = "SFX/objectsound5_loop.wav"
+	sounds.sfx["objectsound6"] = "SFX/objectsound6_loop.wav"
+end
 
-	sounds.sfx.objectsound1:isLooping(true)
-	sounds.sfx.objectsound2:isLooping(true)
-	sounds.sfx.objectsound3:isLooping(true)
-	sounds.sfx.objectsound4:isLooping(true)
-	sounds.sfx.objectsound5:isLooping(true)
-	sounds.sfx.objectsound6:isLooping(true)
+function loop(r)
+	if r == 1 then return sounds.sfx["objectsound1"] end
+	if r == 2 then return sounds.sfx["objectsound2"] end
+	if r == 2 then return sounds.sfx["objectsound3"] end
+	if r == 2 then return sounds.sfx["objectsound4"] end
+	if r == 2 then return sounds.sfx["objectsound5"] end
+	return sounds.sfx["objectsound6"]
 end
 
 return {

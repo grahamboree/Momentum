@@ -45,5 +45,7 @@ function ElementRepulsor:modifyBoid(i, boidData, addIfPossible)
 		boidData.velocities[i][2] = newY
 		
 		boidData.modifiedThisUpdate[i] = true
+		
+		self.boidsUpdatedThisFrame = self.boidsUpdatedThisFrame + 1
 	end
 end

@@ -1,3 +1,5 @@
+require "audio"
+
 --[[ 
 
 An element knows:
@@ -19,6 +21,7 @@ function ElementBase:new(obj)
   obj = obj or {}   -- create object if user does not provide one
   setmetatable(obj, self);
   self.__index = self;
+  self.boidsUpdatedThisFrame = 0
   return obj;
 end
 
@@ -46,4 +49,15 @@ function ElementBase:setDefaults() end
 
 function ElementBase:modifyBoid(i, boidData, addIfPossible) end
   
-function ElementBase:preModifyAllBoids(boidData) end
+function ElementBase:preModifyAllBoids(e, boidData) 
+  if not self.currentSound then
+    self.currentSound = love.audio.newSource(loop(e % 6))
+    self.currentSound:setLooping(true)
+    self.currentSound:play()
+    self.currentSound:setVolume(0)
+
+  else
+    self.currentSound:setVolume(clamp01(self.boidsUpdatedThisFrame / 100))
+    self.boidsUpdatedThisFrame = 0
+  end
+end
