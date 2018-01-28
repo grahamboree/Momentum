@@ -56,9 +56,8 @@ function ElementCircle:modifyBoid(i, boidData, addIfPossible)
     normDeltaY = normDeltaY * self.radius
 
 
-    boidData.positions[i][1] = self.x + normDeltaX
-    boidData.positions[i][2] = self.y + normDeltaY
-  
+    boidData.positions[i][1] = self.x + normDeltaX * 1.1
+    boidData.positions[i][2] = self.y + normDeltaY * 1.1
 
   end
 end
