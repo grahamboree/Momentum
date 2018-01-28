@@ -85,13 +85,13 @@ local function keypressed(key)
     end
 end
 
-local draggedGuy = nil;
-local function startDrag(x,y,drag_me)
+ draggedGuy = nil;
+ function startDrag(x,y,drag_me)
   draggedGuy = drag_me
   dragOffset = { dx = drag_me.x - x, dy = drag_me.y -y };
 end
 
-local function getHitElement(x,y,element_list)
+function getHitElement(x,y,element_list)
   for k, element in pairs(element_list) do
     if (element:pointIsInside(x,y)) then return element end
   end
@@ -144,7 +144,7 @@ local function mousepressed(x,y)
   end
 end
 
-local function updateDrag()
+function updateDrag()
   if (draggedGuy) then
     draggedGuy.x = love.mouse.getX() + dragOffset.dx;
     draggedGuy.y = love.mouse.getY() +dragOffset.dy;

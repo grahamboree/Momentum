@@ -16,6 +16,7 @@ function ElementGoal:setDefaults()
   if not self.color then self.color = { r = 255, g = 255, b = 255 } end
   if not self.captured then self.captured = {} end
   if not self.numCaptured then self.numCaptured = 0 end
+  self.playerCantDrag = true
   
   self.class = "ElementGoal"
 end

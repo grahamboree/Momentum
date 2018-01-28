@@ -61,6 +61,7 @@ end
 
 local function update(dt)
   boids.update(dt)
+  updateDrag()
 end
 
 local function keypressed(key)
@@ -73,8 +74,23 @@ local function keypressed(key)
       end
 end
 
+local function mousereleased(x,y)
+  updateDrag()
+  draggedGuy = nil;
+end
+
+local function mousepressed(x,y)
+  local placed = getHitElement(x,y,activeElements);
+  if (placed and not placed.playerCantDrag) then 
+    startDrag(x,y,placed) 
+  end
+  
+  
+end
 
 return { enter = enter,
   draw = draw,
   update=update,
-  keypressed=keypressed};
+  keypressed=keypressed,
+  mousereleased=mousereleased,
+  mousepressed=mousepressed};
