@@ -41,8 +41,8 @@ config = {
 }
 
 --mainState = states.startScreen;
-mainState = states.elementEditor;
---mainState = states.levelList;
+--mainState = states.elementEditor;
+mainState = states.levelList;
 
 -- intialization
 function love.load()

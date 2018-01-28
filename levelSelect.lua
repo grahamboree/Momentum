@@ -10,14 +10,15 @@ levelList =
     "level3",
     "level4",
     "level5",
+    "OneWall"
   }
 
 local textX = 400;
 local width = 400;
-local textY = 300;
+local textY = 200;
 local buttonMargin = 10;
 local buttonFrame = 10;
-local yDelta = 100;
+local yDelta = 90;
 
 local buttons = {}
 
