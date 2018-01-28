@@ -125,11 +125,24 @@ end
 
 local function mousepressed(x,y)
   local placed = getHitElement(x,y,placed_guys);
-  if (placed) then startDrag(x,y,placed) end
-  
-  local template = getHitElement(x,y,sidebar_guys);
-  if (template) then
-    local dude = randomPlace(template);
+  if placed then
+    if love.keyboard.isDown("d") then
+      for i, guy in pairs(placed_guys) do
+        if guy == placed then
+          table.remove(placed_guys, i)
+          break
+        end
+      end
+    else
+      startDrag(x,y,placed)
+    end
+  end
+
+  if not love.keyboard.isDown("q") then
+    local template = getHitElement(x,y,sidebar_guys);
+    if (template) then
+      local dude = randomPlace(template);
+    end
   end
 
   local button_pressed = getHitElement(x,y,buttons);
@@ -167,8 +180,10 @@ local function draw()
   love.graphics.rectangle("fill", 0,0, love.graphics.getWidth() * sidebar_width, love.graphics.getHeight());
   
   -- draw sidebar contents
-  for k, template in pairs(sidebar_guys) do
-    template:draw()
+  if not love.keyboard.isDown("q") then
+    for k, template in pairs(sidebar_guys) do
+      template:draw()
+    end
   end
   
   -- draw the placed elements
