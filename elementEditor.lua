@@ -4,6 +4,8 @@ require "Elements/elementGravityWell"
 
 require "DataDumper"
 
+boids = require "boids"
+
 local sidebar_guys = {};
 local placed_guys = {};
 local sidebar_width = 1/16.0;
@@ -45,8 +47,8 @@ local function enter()
     randomPlace(e);
   end
   
-  
-
+  activeElements = placed_guys
+  boids.enter()
 end
 
 local function exit()
@@ -57,7 +59,7 @@ end
 local utf8 = require("utf8")
  
  
-local text = "default"
+text = "default"
 local function textinput(t)
     text = text .. t
 end
@@ -137,8 +139,9 @@ end
 
 
 
-local function update()
+local function update(dt)
   updateDrag();  
+  boids.update(dt)
 end
 
 
@@ -168,6 +171,7 @@ local function draw()
   
   love.graphics.printf(text, 0, 0, love.graphics.getWidth())
 
+  boids.draw()
 end
 
 

@@ -43,4 +43,6 @@
   
   
   function ElementBase:setDefaults() end
+
+  function ElementBase:modifyBoid(i, boidData, addIfPossible) end
   

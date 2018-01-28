@@ -17,7 +17,17 @@ velocities = {}
 positions = {}
 neighbors = {}
 
+boidData = {
+	active = active,
+	accelerations = accelerations,
+	velocities = velocities,
+	positions = positions,
+	neighbors = neighbors
+}
+
 currentboid = 0
+
+activeElements = {}
 
 local function init()
 	for i = 1, NUM_BOIDS do
@@ -61,7 +71,7 @@ local function updateNeighbors()
 	end
 end
 
-local function steerToVelocity(i, desiredX, desiredY)
+function steerToVelocity(i, desiredX, desiredY)
 	--[[
 	local forceX = desiredX - velocities[i][1]
 	local forceY = desiredY - velocities[i][2]
@@ -83,7 +93,7 @@ local function steerToVelocity(i, desiredX, desiredY)
 	}
 end
 
-local function seek(i, x, y)
+function seek(i, x, y)
 	-- delta position
 	local desiredX = x - positions[i][1]
 	local desiredY = y - positions[i][2]
@@ -186,14 +196,13 @@ local function attractor(i)
 	return steerToVelocity(i, boidconf.maxSpeed, 0)
 end
 
-
-
 local function steer(i)
 	local maxF2 = boidconf.maxForce * boidconf.maxForce
 
 	local forceLeft2 = maxF2
 	local result = {0, 0}
-	
+
+
 	local addIfPossible = function(force, scaler)
 		force[1] = force[1] * scaler
 		force[2] = force[2] * scaler
@@ -207,18 +216,13 @@ local function steer(i)
 		end
 	end
 
-	addIfPossible(attractor(i), 1)
+	for e, element in pairs(activeElements) do
+		element:modifyBoid(i, boidData, addIfPossible)
+	end
+
 	addIfPossible(alignment(i), boidconf.aliWeight)
 	addIfPossible(separation(i), boidconf.sepWeight)
 	addIfPossible(cohesion(i), boidconf.cohWeight)
-
-	--local attractor = steerToVelocity(i, boidconf.maxSpeed, boidconf.maxSpeed)
-
-	--local a = alignment(i)
-	--local s = separation(i)
-	--local c = cohesion(i)
-	--result[1] = attractor[1]-- * a[1] * boidconf.aliWeight + s[1] * boidconf.sepWeight + c[1] * boidconf.cohWeight
-	--result[2] = attractor[1]-- * a[2] * boidconf.aliWeight + s[2] * boidconf.sepWeight + c[2] * boidconf.cohWeight
 
 	return result
 end

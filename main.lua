@@ -1,6 +1,5 @@
 
 states = {
-  boids = require "boids",
   startScreen = require "startScreen",
   elementEditor =require "elementEditor",
 }
@@ -13,9 +12,8 @@ config = {
 }
 
 
-mainState = states.boids;
 --mainState = states.startScreen;
---mainState = states.elementEditor;
+mainState = states.elementEditor;
 
 -- intialization
 function love.load()
