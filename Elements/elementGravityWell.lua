@@ -6,16 +6,18 @@ vec2 = require "vector2d"
 ElementGravityWell = ElementCircle:new();
 
 -- remember this subclass for the editor
-table.insert(ElementBase.elementClasses, ElementGravityWell);
+ElementBase.elementClasses.ElementGravityWell = ElementGravityWell;
 
 
 function ElementGravityWell:setDefaults()
   if not self.radius then self.radius = 100 end
   if not self.text then self.text = "grav" end
   if not self.color then self.color = { r = 35, g = 35, b = 35 } end
+  self.class = "ElementGravityWell"
 end
 
 function ElementGravityWell:modifyBoid(i, boidData, addIfPossible)
+  
 	self:setDefaults()
 	local deltaX = self.x - boidData.positions[i][1]
 	local deltaY = self.y - boidData.positions[i][2]

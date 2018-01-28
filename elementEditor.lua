@@ -2,7 +2,10 @@ require "Elements/elementCircle"
 require "Elements/elementRectangle"
 require "Elements/elementGravityWell"
 
+require "utils"
 require "DataDumper"
+
+local tserialize = (require "tserialize").tserialize
 
 boids = require "boids"
 
@@ -10,6 +13,8 @@ local sidebar_guys = {};
 local placed_guys = {};
 local sidebar_width = 1/16.0;
 local buttons = {};
+
+local level_filename = "editorLevel.lua"
 
 local function randomPlace(template)
 
@@ -26,7 +31,7 @@ local function enter()
 
   sidebar_guys = {}; -- rebuild sidebar
   
-  local num_classes = #ElementBase.elementClasses;
+  local num_classes = tablelength(ElementBase.elementClasses);
   if (num_classes <= 0) then return end
   
   local delta_y = love.graphics.getHeight() / (1+num_classes);
@@ -103,13 +108,20 @@ local function mousepressed(x,y)
   local button_pressed = getHitElement(x,y,buttons);
   if (button_pressed) then
     if (button_pressed.text == "SAVE") then 
-      local s = DataDumper(placed_guys);
-      love.filesystem.write("editorLevel", s);
+      local s = tserialize(placed_guys)
+      love.filesystem.write(level_filename, s);
     end
     if (button_pressed.text == "LOAD") then
-      local s = love.filesystem.read("editorLevel");
+      local s = love.filesystem.read(level_filename);
       local copy_func = loadstring(s);
       local copy =copy_func();
+      
+      
+      for k,guy in pairs(copy) do
+        local class = ElementBase.elementClasses[guy.class];
+        setmetatable(guy, class);
+      end
+      
       placed_guys = copy;
       activeElements = placed_guys
   

@@ -6,7 +6,7 @@ vec2 = require "vector2d"
 ElementCircle = ElementBase:new();
 
 -- remember this subclass for the editor
-table.insert(ElementBase.elementClasses, ElementCircle);
+ElementBase.elementClasses.ElementCircle = ElementCircle;
 
 
 
@@ -32,6 +32,7 @@ function ElementCircle:setDefaults()
   if not self.radius then self.radius = 30 end
   if not self.text then self.text = "circ" end
   if not self.color then self.color = { r = 255, g = 0, b = 0 } end
+  self.class = "ElementCircle"
 end
 
 function ElementCircle:modifyBoid(i, boidData, addIfPossible)

@@ -8,7 +8,7 @@ require "Elements/elementBase"
 ElementRectangle = ElementBase:new();
 
 -- remember this subclass for the editor
-table.insert(ElementBase.elementClasses, ElementRectangle);
+ElementBase.elementClasses.ElementRectangle = ElementRectangle;
 
 
 function ElementRectangle:draw()
@@ -34,6 +34,8 @@ function ElementRectangle:setDefaults()
   if not self.width then self.width = 30 end
   if not self.height then self.height = 60 end
   if not self.color then self.color = {r = 0, g = 0, b = 255} end
+  self.class = "ElementRectangle"
+
 end
 
 
